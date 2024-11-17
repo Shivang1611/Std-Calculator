@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Design by Shivang Shukla -  Calculator, Love Calculator, Year Calculator, Age Calculator, BMI Calculator, Calorie Calculator</title>
+	<script>
+		const calculator = document.querySelector('.calculator')
+const keys = calculator.querySelector('.calculator__keys')
+const display = calculator.querySelector('.calculator__display')
+
+let displayedNum = '0'
+let firstValue = null
+let operator = null
+let secondValue = null
+let previousKeyType = null
+
+keys.addEventListener('click', e => {
+  if (e.target.matches('button')) {
+    const key = e.target
+    const action = key.dataset.action
+    const keyContent = key.textContent
+    const createResultString = () =>{
+    if (!action) {
+        return displayedNum === '0' || previousKeyType === 'operator' || previousKeyType === 'calculate' ? keyContent : displayedNum + keyContent
+      } else if (action === 'decimal') {
+        return !displayedNum.includes('.') ? displayedNum + '.' : previousKeyType === 'operator' ? '0.' : displayedNum
+      } else if (action === 'clear') {
+        return '0'
+      } else if (action === 'calculate') {
+        const firstValue = calculator.dataset.firstValue
+        const operator = calculator.dataset.operator
+        const secondValue = displayedNum
+        return firstValue && operator && previousKeyType !== 'operator' && previousKeyType !== 'calculate' ? calculate(firstValue, operator, secondValue) : displayedNum
+      }
+    }
+    const updateCalculatorState = () => {
+      const keyType = getKeyType(key)
+      calculator.dataset.previousKeyType = keyType
+      Array.from(key.parentNode.children).forEach(k => k.classList.remove('is-depressed'))
+      if (keyType === 'operator') {
+        key.classList.add('is-depressed')
+        calculator.dataset.operator = key.dataset.action
+        calculator.dataset.firstValue = displayedNum
+      }
+    }
+    const resultString = createResultString()
+    display.textContent = resultString
+    updateCalculatorState()
+  }
+})
+
+const calculate = (firstValue, operator, secondValue) => {
+  let result = 0
+  switch (operator) {
+    case 'add':
+      result = parseFloat(firstValue) + parseFloat(secondValue)
+      break
+    case 'subtract':
+      result = parseFloat(firstValue) - parseFloat(secondValue)
+      break
+    case 'multiply':
+      result = parseFloat(firstValue) * parseFloat(secondValue)
+      break
+    case 'divide':
+      result = parseFloat(firstValue) / parseFloat(secondValue)
+      break
+  }
+  return result.toString()
+}
+
+const getKeyType = key => {
+  const action = key.dataset.action
+  if (!action) return 'number'
+  if (action === 'add' || action === 'subtract' || action === 'multiply' || action === 'divide') return 'operator'
+  if (action === 'decimal') return 'decimal'
+  if (action === 'clear') return 'clear'
+  if (action === 'calculate') return 'calculate'
+}
+	</script>
+	<style>
+		body {
+			background-color: #f2f2f2;
+			font-family: Arial, sans-serif;
+			margin: 0;
+			box-sizing: border-box;
+			padding: 0;
+		}
+		.container {
+			width: 80%;
+			margin: 40px auto;
+			text-align: center;
+		}
+		.header {
+			background-color: #333;
+			color: #fff;
+			padding: 20px;
+			text-align: center;
+		}
+		.photo {
+			width: 300px;
+			border-radius: 2rem;
+			margin: 20px;
+		}
+		.calculator {
+			margin-top: 20px;
+		}
+		.input-field {
+			width: 50%;
+			padding: 10px;
+			margin: 10px;
+			border: 1px solid #ccc;
+		}
+		.button {
+			background-color: #4CAF50;
+			color: #fff;
+			padding: 10px 20px;
+			border: none;
+			border-radius: 5px;
+			cursor: pointer;
+		}
+		.button:hover {
+			background-color: #3e8e41;
+		}
+		.result {
+			margin-top: 20px;
+			font-size: 24px;
+			font-weight: bold;
+		}
+	</style>
+</head>
+<body>
+	<div class="header">
+		<img src="SHIVANG.jpg" alt="Shivang Shukla" class="photo">
+		<h1>Design by Shivang Shukla</h1>
+	</div>
+	<div class="container">
+		<div class="calculator">
+			<h2>Calculator</h2>
+			<input type="text" id="sci-input" class="input-field" placeholder="Enter a mathematical expression">
+			<button class="button" onclick="calculateSci()">Calculate</button>
+			<div id="sci-result" class="result"></div>
+		</div>
+		<div class="calculator">
+			<h2>Calculator</h2>
+			<input type="text" id="love-name1" class="input-field" placeholder="Enter your name">
+			<input type="text" id="love-name2" class="input-field" placeholder="Enter your partner's name">
+			<button class="button" onclick="calculateLove()">Calculate Love</button>
+			<div id="love-result" class="result"></div>
+		</div>
+		<div class="calculator">
+			<h2>Year Calculator</h2>
+			<input type="number" id="year-input" class="input-field" placeholder="Enter a year">
+			<button class="button" onclick="calculateYear()">Calculate</button>
+			<div id="year-result" class="result"></div>
+		</div>
+		<div class="calculator">
+			<h2>Age Calculator</h2>
+			<input type="date" id="birthdate-input" class="input-field" placeholder="Enter your birthdate">
+			<button class="button" onclick="calculateAge()">Calculate</button>
+			<div id="age-result" class="result"></div>
+		</div>
+		<div class="calculator">
+			<h2>TO CHECK LEAP YEAR </h2>
+			<input type="number" id="leap-year-input" class="input-field" placeholder="Enter a year">
+			<button class="button" onclick="checkLeapYear()">Check</button>
+			<div id="leap-year-result" class="result"></div>
+		</div>
+		<div class="calculator">
+			<script>
+				var heightInput = document.querySelector(".height-input-field");
+var weightInput = document.querySelector(".weight-input-field");
+var calculateButton = document.querySelector(".calculate");
+var result = document.querySelector(".result");
+var statement = document.querySelector(".result-statement");
+var BMI, height, weight;
+
+calculateButton.addEventListener("click", ()=>{
+    height = heightInput.value;
+    weight = weightInput.value;
+    BMI = weight/(height**2); 
+    result.innerText = BMI.toFixed(2);
+
+    if(BMI < 18.5){
+        statement.innerText = "Your BMI falls within the underweight range";    
+    }else if((BMI > 18.5) && (BMI < 24.9)){
+        statement.innerText = "Your BMI falls within the normal or healthy weight range";
+    }else if((BMI > 25) && (BMI < 29.9 )){
+        statement.innerText = "Your BMI falls within the overweight range";
+    }else{
+        statement.innerText = "Your BMI falls within the obese range";
+    }
+});
+			</script>
+			<h2><ul>BMI CALCULATOR</ul></h2>
+			<input type="number" id="weight-input" class="input-field" placeholder="Enter your weight (in kg)">
+			<input type="number" id="height-input" class="input-field" placeholder="Enter your height (in meters)">
+			<button class="button" onclick="calculateBMI()">Calculate</button>
+			<div id="bmi-result" class="result"></div>
+		</div>
+		<div class="calculator">
+			<h2>CALORIE CALCULATOR</h2>
+			<input type="number" id="weight-input-cal" class="input-field" placeholder="Enter your weight (in kg)">
+			<input type="number" id="height-input-cal" class="input-field" placeholder="Enter your height (in meters)">
+			<input type="number" id="age-input-cal" class="input-field"
